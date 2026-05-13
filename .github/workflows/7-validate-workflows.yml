@@ -1,0 +1,77 @@
+name: Validate workflow structure
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+      - update-game
+
+permissions:
+  contents: read
+
+jobs:
+  validate-workflows:
+    name: Validate workflows
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate YAML syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          paths = sorted(Path(".github/workflows").glob("*.yml"))
+          if not paths:
+              raise SystemExit("No workflow files found in .github/workflows")
+
+          for path in paths:
+              with path.open(encoding="utf-8") as f:
+                  yaml.safe_load(f)
+              print(f"YAML OK: {path}")
+          PY
+
+      - name: Validate step workflow alignment
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          expected = [
+              ("0-welcome.yml", "0", "1"),
+              ("1-open-a-pull-request.yml", "1", "2"),
+              ("2-assign-yourself.yml", "2", "3"),
+              ("3-leave-a-review.yml", "3", "4"),
+              ("4-suggest-changes.yml", "4", "5"),
+              ("5-apply-changes.yml", "5", "6"),
+              ("6-merge-your-pull-request.yml", "6", "X"),
+          ]
+
+          base = Path(".github/workflows")
+          for filename, from_step, to_step in expected:
+              path = base / filename
+              text = path.read_text(encoding="utf-8")
+
+              if "skills/action-update-step@v2" not in text:
+                  raise SystemExit(f"{filename}: missing skills/action-update-step@v2")
+              if f"from_step: {from_step}" not in text:
+                  raise SystemExit(f"{filename}: expected from_step: {from_step}")
+              if f"to_step: {to_step}" not in text:
+                  raise SystemExit(f"{filename}: expected to_step: {to_step}")
+
+              expected_current = f"needs.get_current_step.outputs.current_step == {from_step}"
+              if expected_current not in text:
+                  raise SystemExit(
+                      f"{filename}: expected condition containing '{expected_current}'"
+                  )
+
+              if "echo \"current_step=$(cat ./.github/steps/-step.txt)\" >> $GITHUB_OUTPUT" not in text:
+                  raise SystemExit(f"{filename}: missing current step output extraction")
+
+              print(f"STRUCTURE OK: {filename}")
+          PY
