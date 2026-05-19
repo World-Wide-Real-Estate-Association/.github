@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Validate YAML syntax
         run: |
@@ -40,20 +42,47 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
 
           expected = [
-              ("0-welcome.yml", "0", "1"),
-              ("1-open-a-pull-request.yml", "1", "2"),
-              ("2-assign-yourself.yml", "2", "3"),
-              ("3-leave-a-review.yml", "3", "4"),
-              ("4-suggest-changes.yml", "4", "5"),
-              ("5-apply-changes.yml", "5", "6"),
-              ("6-merge-your-pull-request.yml", "6", "X"),
+              ("0-welcome.yml", "0", "1", "contents: read", "contents: write", [
+                  "pull-requests: write",
+                  "set -euo pipefail",
+                  "git ls-remote --exit-code --heads origin",
+                  "git switch --create",
+                  "sed -i 's/Game over/Game over, refresh to play again 🧑‍💻 🤖!/' index.html",
+              ]),
+              ("1-open-a-pull-request.yml", "1", "2", "contents: read", "contents: write", [
+                  "github.event_name == 'workflow_dispatch'",
+                  "github.event.pull_request.base.ref == 'main'",
+                  "github.event.pull_request.head.repo.full_name == github.repository",
+                  "github.head_ref == 'update-game'",
+              ]),
+              ("2-assign-yourself.yml", "2", "3", "contents: read", "contents: write", [
+                  "types:",
+                  "- assigned",
+                  "github.event_name == 'workflow_dispatch'",
+                  "github.event.pull_request.base.ref == 'main'",
+                  "github.event.pull_request.head.repo.full_name == github.repository",
+                  "github.event.assignee.login == github.event.pull_request.user.login",
+              ]),
+              ("3-leave-a-review.yml", "3", "4", "contents: read", "contents: write", [
+                  "github.event_name == 'workflow_dispatch'",
+                  "github.event.pull_request.base.ref == 'main'",
+                  "github.event.pull_request.head.repo.full_name == github.repository",
+                  "github.event.review.user.login == github.event.pull_request.user.login",
+              ]),
+              ("4-suggest-changes.yml", "4", "5", "contents: read", "contents: write", [
+                  "github.event_name == 'workflow_dispatch'",
+                  "github.event.pull_request.base.ref == 'main'",
+                  "github.event.pull_request.head.repo.full_name == github.repository",
+                  "github.event.comment.user.login == github.event.pull_request.user.login",
+              ]),
+              ("5-apply-changes.yml", "5", "6", "contents: read", "contents: write", []),
+              ("6-merge-your-pull-request.yml", "6", "X", "contents: read", "contents: write", []),
           ]
 
           base = Path(".github/workflows")
-          for filename, from_step, to_step in expected:
+          for filename, from_step, to_step, read_permission, write_permission, required_snippets in expected:
               path = base / filename
               text = path.read_text(encoding="utf-8")
 
@@ -72,6 +101,20 @@ jobs:
 
               if "echo \"current_step=$(cat ./.github/steps/-step.txt)\" >> $GITHUB_OUTPUT" not in text:
                   raise SystemExit(f"{filename}: missing current step output extraction")
+
+              if f"permissions:\n      {read_permission}" not in text:
+                  raise SystemExit(f"{filename}: expected get_current_step permissions to be {read_permission}")
+              if write_permission not in text:
+                  raise SystemExit(f"{filename}: expected write permission '{write_permission}'")
+              if "persist-credentials: false" not in text and filename != "0-welcome.yml":
+                  raise SystemExit(f"{filename}: expected checkout with persist-credentials: false")
+
+              for snippet in required_snippets:
+                  if snippet not in text:
+                      raise SystemExit(f"{filename}: missing required snippet '{snippet}'")
+
+              if filename == "2-assign-yourself.yml" and "- review_requested" in text:
+                  raise SystemExit(f"{filename}: unexpected review_requested trigger")
 
               print(f"STRUCTURE OK: {filename}")
           PY
