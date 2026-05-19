@@ -106,7 +106,7 @@ jobs:
                   raise SystemExit(f"{filename}: expected get_current_step permissions to be {read_permission}")
               if write_permission not in text:
                   raise SystemExit(f"{filename}: expected write permission '{write_permission}'")
-              if "persist-credentials: false" not in text and filename != "0-welcome.yml":
+              if "persist-credentials: false" not in text:
                   raise SystemExit(f"{filename}: expected checkout with persist-credentials: false")
 
               for snippet in required_snippets:
