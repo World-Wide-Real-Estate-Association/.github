@@ -1,40 +1,39 @@
 name: Step 2, Assign yourself
 
-# This step triggers after the user assigns themselves as a pull request reviewer.
+# This step triggers after the user assigns themselves as a pull request assignee.
 # This workflow updates from step 2 to step 3.
 
-# This will run every time someone is assigned as a pull request reviewer.
+# This will run every time someone is assigned to the pull request.
 # Reference: https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows
 on:
   workflow_dispatch:
   pull_request:
     types:
       - assigned
-      - review_requested
-
-# Reference: https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-permissions:
-  # Need `contents: read` to checkout the repository.
-  # Need `contents: write` to update the step metadata.
-  contents: write
 
 jobs:
   # Get the current step to only run the main job when the learner is on the same step.
   get_current_step:
     name: Check current step number
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - id: get_step
         run: |
           echo "current_step=$(cat ./.github/steps/-step.txt)" >> $GITHUB_OUTPUT
     outputs:
       current_step: ${{ steps.get_step.outputs.current_step }}
 
-  on_assigned_reviewer:
-    name: On assigned reviewer
+  on_assigned_assignee:
+    name: On assigned assignee
     needs: get_current_step
+    permissions:
+      contents: write
 
     # We will only run this action when:
     # 1. This repository isn't the template repository.
@@ -43,7 +42,11 @@ jobs:
     # Reference: https://docs.github.com/en/actions/learn-github-actions/expressions
     if: >-
       ${{ !github.event.repository.is_template
-          && needs.get_current_step.outputs.current_step == 2 }}
+          && needs.get_current_step.outputs.current_step == 2
+          && (github.event_name == 'workflow_dispatch'
+              || (github.event.pull_request.base.ref == 'main'
+                  && github.event.pull_request.head.repo.full_name == github.repository
+                  && github.event.assignee.login == github.event.pull_request.user.login)) }}
 
     # We'll run Ubuntu for performance instead of Mac or Windows.
     runs-on: ubuntu-latest
@@ -54,6 +57,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Let's get all the branches.
+          persist-credentials: false
           ref: update-game
 
       # In README.md, switch step 2 for step 3.
