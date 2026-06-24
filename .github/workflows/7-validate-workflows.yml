@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           persist-credentials: false
 
@@ -42,6 +42,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import yaml
 
           expected = [
               ("0-welcome.yml", "0", "1", "contents: read", "contents: write", [
@@ -86,8 +87,10 @@ jobs:
               path = base / filename
               text = path.read_text(encoding="utf-8")
 
-              if "skills/action-update-step@v2" not in text:
-                  raise SystemExit(f"{filename}: missing skills/action-update-step@v2")
+              if "skills/action-update-step@9046776751ec172f2b10c6b9569c108ffa701a2d" not in text:
+                  raise SystemExit(f"{filename}: missing skills/action-update-step@9046776751ec172f2b10c6b9569c108ffa701a2d")
+              if "actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5" not in text:
+                  raise SystemExit(f"{filename}: missing actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5")
               if f"from_step: {from_step}" not in text:
                   raise SystemExit(f"{filename}: expected from_step: {from_step}")
               if f"to_step: {to_step}" not in text:
@@ -106,6 +109,8 @@ jobs:
                   raise SystemExit(f"{filename}: expected get_current_step permissions to be {read_permission}")
               if write_permission not in text:
                   raise SystemExit(f"{filename}: expected write permission '{write_permission}'")
+              if "permissions:\n  contents: read" not in text:
+                  raise SystemExit(f"{filename}: expected top-level read-only permissions")
               if "persist-credentials: false" not in text:
                   raise SystemExit(f"{filename}: expected checkout with persist-credentials: false")
 
@@ -117,4 +122,44 @@ jobs:
                   raise SystemExit(f"{filename}: unexpected review_requested trigger")
 
               print(f"STRUCTURE OK: {filename}")
+
+          for path in sorted(base.glob("*.yml")):
+              text = path.read_text(encoding="utf-8")
+              filename = path.name
+              data = yaml.safe_load(text)
+              if not isinstance(data, dict):
+                  raise SystemExit(f"{filename}: workflow content is not a mapping")
+
+              on_value = data.get("on")
+              on_keys = set(on_value.keys()) if isinstance(on_value, dict) else set()
+              if "pull_request_target" in on_keys:
+                  raise SystemExit(f"{filename}: pull_request_target is not allowed")
+
+              permissions = data.get("permissions")
+              if permissions == "write-all":
+                  raise SystemExit(f"{filename}: top-level write-all permissions are not allowed")
+
+              jobs = data.get("jobs", {}) if isinstance(data, dict) else {}
+              for job_name, job in jobs.items():
+                  if not isinstance(job, dict):
+                      continue
+                  job_permissions = job.get("permissions")
+                  if job_permissions == "write-all":
+                      raise SystemExit(f"{filename}: job '{job_name}' uses write-all permissions")
+                  for step in job.get("steps", []):
+                      if not isinstance(step, dict):
+                          continue
+                      step_with = step.get("with", {})
+                      if isinstance(step_with, dict) and step_with.get("persist-credentials") is True:
+                          raise SystemExit(f"{filename}: persist-credentials must never be true")
+                      ref = step.get("uses")
+                      if not ref or ref.startswith("./") or ref.startswith("docker://"):
+                          continue
+                      if "@" not in ref:
+                          raise SystemExit(f"{filename}: action reference must include @ref ({ref})")
+                      version = ref.rsplit("@", 1)[1]
+                      if len(version) != 40 or any(ch not in "0123456789abcdef" for ch in version):
+                          raise SystemExit(f"{filename}: action must be pinned to a 40-char SHA ({ref})")
+
+              print(f"SECURITY OK: {filename}")
           PY
