@@ -9,6 +9,8 @@ Repository workflow and CI security posture review for immediate hardening readi
 3. Checkout credential persistence is explicitly disabled across workflow checkouts.
 4. Validation now enforces security invariants: no `pull_request_target`, no `write-all`, SHA-pinned actions, and token-pattern detection.
 5. New CI security gates were added for secret scanning and dependency advisory review.
+6. Security gates now run on pull requests, governance-relevant pushes, and a weekly schedule for continuous assurance.
+7. Dependency advisory review remains mandatory on pull requests to protect merge decisions.
 
 ## Critical risks and status
 - **Unpinned third-party actions:** Mitigated.
@@ -16,15 +18,27 @@ Repository workflow and CI security posture review for immediate hardening readi
 - **Secret exposure in code history:** Monitored with CI secret scanning; continue periodic full-history scans.
 - **Vulnerable dependency introduction via PRs:** Mitigated with dependency review gate.
 - **Merge without mandatory security checks:** Pending repository branch protection configuration.
+- **Access/policy drift over time:** Mitigated in process by recurring governance cadence; enforce through operational reviews.
 
 ## Prioritized remediation
 1. **P0:** Configure branch protection/rulesets to require:
    - `Validate workflow structure / Validate workflows`
    - `Security gates / Secret scan`
    - `Security gates / Dependency advisory review`
-2. **P1:** Add scheduled recurring security scans (nightly/weekly) for continuous assurance.
-3. **P1:** Add CODEOWNERS or protected-review policy for workflow file changes.
+2. **P1:** Add CODEOWNERS or protected-review policy for workflow file changes.
+3. **P1:** Add explicit risk acceptance register with owner/expiry tracking.
 4. **P2:** Extend dependency policy thresholds and license rules as needed.
+
+## Operating model for organized updates
+- **Weekly:** Publish a concise security-and-reliability update (status, incidents, open risks, mitigation progress).
+- **Monthly:** Review repository access, token scope, dependency posture, and workflow policy drift.
+- **Quarterly:** Re-certify Zero Trust posture and approve remediation roadmap for next quarter.
+
+## Accountability model
+- **Security owner:** Maintains gates, triages findings, and tracks remediation closure.
+- **Repository maintainer:** Enforces branch protection/rulesets and approval quality.
+- **Incident owner:** Coordinates escalation, communication, and post-incident corrective actions.
+- **Governance reviewer:** Confirms risk acceptances include owner, expiry, and compensating controls.
 
 ## Efficiency narrative (confidence vs doubt)
 The strongest efficiency comes from turning uncertainty into repeatable gates.  

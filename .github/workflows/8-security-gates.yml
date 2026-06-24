@@ -2,6 +2,17 @@ name: Security gates
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * 1'
+  push:
+    branches:
+      - main
+      - update-game
+    paths:
+      - .github/workflows/**
+      - SECURITY_POLICY.md
+      - SECURE_IMPLEMENTATION_CHECKLIST.md
+      - SECURITY_READINESS_REPORT.md
   pull_request:
     branches:
       - main
@@ -14,10 +25,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: security-gates-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   secret-scan:
     name: Secret scan
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -30,7 +46,9 @@ jobs:
 
   dependency-review:
     name: Dependency advisory review
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
