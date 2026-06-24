@@ -3,6 +3,7 @@ name: Security gates
 on:
   workflow_dispatch:
   schedule:
+    # Weekly Monday 04:00 UTC continuous-assurance run.
     - cron: '0 4 * * 1'
   push:
     branches:

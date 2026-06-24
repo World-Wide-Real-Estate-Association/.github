@@ -1,69 +1,74 @@
-%PDF-1.4
+%PDF-1.3
+%“Œ‹ž ReportLab Generated PDF document (opensource)
 1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
+<<
+/F1 2 0 R /F2 3 0 R
+>>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
 endobj
 3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+<<
+/BaseFont /Times-Roman /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
 endobj
 4 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman >>
+<<
+/Contents 8 0 R /MediaBox [ 0 0 612 792 ] /Parent 7 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
 endobj
 5 0 obj
-<< /Length 1916 >>
+<<
+/PageMode /UseNone /Pages 7 0 R /Type /Catalog
+>>
+endobj
+6 0 obj
+<<
+/Author (anonymous) /CreationDate (D:20260624073647+00'00') /Creator (anonymous) /Keywords () /ModDate (D:20260624073647+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (unspecified) /Title (untitled) /Trapped /False
+>>
+endobj
+7 0 obj
+<<
+/Count 1 /Kids [ 4 0 R ] /Type /Pages
+>>
+endobj
+8 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ] /Length 1327
+>>
 stream
-BT
-/F1 12 Tf
-72 770 Td
-14 TL
-(This initiative should be positioned as a governance-centered, enterprise-grade achievementâ€”one that reflects institutional discipline, technical maturity, and long-term strategic vision.) Tj
-T*
-() Tj
-T*
-(It is not simply a technology deployment; it is the product of rigorous architecture design, policy alignment, security engineering excellence, and sustained operational commitment.) Tj
-T*
-() Tj
-T*
-(At its core, the program represents a deliberate investment in Zero Trust detection and automated response capabilities, built to meet modern threat realities with precision and resilience.) Tj
-T*
-() Tj
-T*
-(The development journey required deep dedication across multiple dimensions: establishing principled governance models, implementing layered detection logic, integrating automation pipelines, and ensuring continuous validation through measurable controls.) Tj
-T*
-() Tj
-T*
-(Every phase demanded not only technical execution, but leadership, accountability, and standards worthy of high-trust environments.) Tj
-T*
-() Tj
-T*
-(From a governance perspective, this work demonstrates structured oversight, clear decision pathways, and responsible risk management.) Tj
-T*
-(From a professional perspective, it shows methodical planning, quality assurance, and operational consistency.) Tj
-T*
-(From a strategic perspective, it establishes a foundation that is now directly relevant to todayâ€™s AI-driven landscape, where speed, trust, explainability, and adaptive defense are no longer optionalâ€”they are essential.) Tj
-T*
-() Tj
-T*
-(What exists today is therefore not accidental progress; it is the outcome of hard-earned discipline and purposeful innovation.) Tj
-T*
-() Tj
-T*
-(It reflects the prestige of building something durable, intelligent, and future-readyâ€”an implementation that honors the effort it took to create it and the responsibility it carries going forward.) Tj
-ET
-endstream
+Gas1^?#LZ@&:Dg-fZ1F^;G3>CUjYjd":3@E!<n@pd,aJP0op\?a3")E43LQ540XD=L2t==cHOT#DWhH-2XR[gM#Q,Wmp@u[g!]jbS)*r^mJj'0qfhH'p=8>q;i-tah-GN'rBS-aH_8DM?b@h:@`lC6i96bHP`2LQfoaBeW0<':1stmJE\*a5Xf218PL$o0P&X18p7<WQnD_4Mp(!]nktRkiLVU@^?+K`.[B^,"I("J454XR<gHKqAVh6EUq(f.p6q9OP\&L9-jcW<rc<H`b7Y1<Kdf(3QIsZn+p0-^orpFNprj<<I7k']$0SUGb)[$Jqc/a*X1+SDMag[J1LF>`![>![,a`ioD6CJ&&p_&r3T4Qp!("<WJU1D(>[)e+[gI;O=Fl:Hba,]rBEX3(N(Tt=2@_?G.,D5?WP*KJF7E`?gq"Eb&N,S/#`h1$K/[1C;mY)/)2P<-Aif*`fBZIsHlfF(;9q9tWpdtL+'&"]u`#0j0F:GXW7F3i`7[6h[B!Q#*pHHAYS6'f>I4/'J#3J7)3&h3E&iXHjjVT"dklHWXCMp23H75Na>[W#-Jbe_hc*]DB#8nJMDc0Np)>1aG%k$B`O8.bn^P.tJOu!P)'_i=`H[M`qnfJ!+b^Jukf+,[q;([_F:C1_L",O"_=r?mF0JbA+r=BK7o+n6cU/&=[6ROJYmH@'kB]R,O\A'rN=ODFp]f/5=\"&2C;S*t_)k7!qD?lAYHpPC1$efG5m660Q9Oi"HC,c2#3,!+R+uE)pj[V:8TkM1K"i`Yq&8;8pCSf%V38tWfL_u[S%Xj[CqH5W)qlX:mjtMgZ:XZOi$3/Q1phr>IpqJ'l?Hb&h[.:.IQs'uIKCGPpd,-`kZHeom,)n#16_q:`Lb2^T*'@AG1o3F*q:)($q7TC]OnaGe(/;i9F*htPr>[*rH/P3ZgqUX]+b\g%KI=>&igSq<0JUEW/,ER072S!eRt%"W0;f)[jao22(Z=)]&FF2krf#qY!nNcZ5^Ug@1oJ096u%hG&i=6P-PP5C.,rI0jfm#%l0I%L<(%@L2IgEnpp!=]#aae-BkG/PGm%+h?PpjD1U`k9pqSq3$pKTtp&ug??[1lT_Q96]CIkL71uX#f]*jqY0'`A0*;L1]k(V)p5@DZ+"&[S=hVg*SP"o08r-XVt/XYhY9TKad@4RoF:]%@n*,ED0k!KTF&Q,F&n-/$F\"W7ST"!R%(G@9=Sb-2TU1;pAKZTr8dpHu1--M5SfOeue.CMUoFK@42STaVM`2@>DbR(sN8]t+]J3(8nTU@p@'s)9QegFWuc^Zf@)QdqZ8P-BY-]/-DNmR+&#5%>5->*Js~>endstream
 endobj
 xref
-0 6
+0 9
 0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000241 00000 n 
-0000000313 00000 n 
+0000000061 00000 n 
+0000000102 00000 n 
+0000000209 00000 n 
+0000000318 00000 n 
+0000000511 00000 n 
+0000000579 00000 n 
+0000000840 00000 n 
+0000000899 00000 n 
 trailer
-<< /Size 6 /Root 1 0 R >>
+<<
+/ID 
+[<15c0dfe1676987ea13b0fb7aee2c2cf6><15c0dfe1676987ea13b0fb7aee2c2cf6>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 6 0 R
+/Root 5 0 R
+/Size 9
+>>
 startxref
-2281
+2317
 %%EOF

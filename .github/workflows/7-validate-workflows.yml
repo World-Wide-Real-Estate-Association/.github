@@ -83,6 +83,13 @@ jobs:
           ]
 
           base = Path(".github/workflows")
+
+          def is_sha_pinned_action(ref: str) -> bool:
+              if "@" not in ref:
+                  return False
+              version = ref.rsplit("@", 1)[1]
+              return len(version) == 40 and all(ch in "0123456789abcdef" for ch in version)
+
           for filename, from_step, to_step, read_permission, write_permission, required_snippets in expected:
               path = base / filename
               text = path.read_text(encoding="utf-8")
@@ -123,6 +130,12 @@ jobs:
 
               print(f"STRUCTURE OK: {filename}")
 
+          # Self-checks for security invariant predicates with known good/bad examples.
+          if not is_sha_pinned_action("actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5"):
+              raise SystemExit("validator self-check failed: expected SHA-pinned action to pass")
+          if is_sha_pinned_action("actions/checkout@v4"):
+              raise SystemExit("validator self-check failed: expected tag-pinned action to fail")
+
           for path in sorted(base.glob("*.yml")):
               text = path.read_text(encoding="utf-8")
               filename = path.name
@@ -157,8 +170,7 @@ jobs:
                           continue
                       if "@" not in ref:
                           raise SystemExit(f"{filename}: action reference must include @ref ({ref})")
-                      version = ref.rsplit("@", 1)[1]
-                      if len(version) != 40 or any(ch not in "0123456789abcdef" for ch in version):
+                      if not is_sha_pinned_action(ref):
                           raise SystemExit(f"{filename}: action must be pinned to a 40-char SHA ({ref})")
 
               print(f"SECURITY OK: {filename}")
