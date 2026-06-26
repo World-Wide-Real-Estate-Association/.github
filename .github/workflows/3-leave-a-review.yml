@@ -14,11 +14,16 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: step-3-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Get the current step to only run the main job when the learner is on the same step.
   get_current_step:
     name: Check current step number
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:
@@ -35,6 +40,7 @@ jobs:
   on_leave_review:
     name: On leave review
     needs: get_current_step
+    timeout-minutes: 10
     permissions:
       contents: write
 

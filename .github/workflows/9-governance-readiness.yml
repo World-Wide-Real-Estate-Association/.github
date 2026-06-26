@@ -53,6 +53,7 @@ jobs:
                   "## 1) Zero Trust governance principles",
                   "## 8) Reliability and efficiency controls",
                   "## 10) Continuous governance and risk acceptance",
+                  "## 11) Long-term software assurance",
               ],
               "SECURE_IMPLEMENTATION_CHECKLIST.md": [
                   "## Rough draft gate",
@@ -72,6 +73,7 @@ jobs:
               "TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md": [
                   "## 1) Compliance baseline by region",
                   "## 2) Governance ownership and approval gates",
+                  "## 10) Phased rollout model",
                   "## 11) Release gate criteria for telemetry expansion",
               ],
           }

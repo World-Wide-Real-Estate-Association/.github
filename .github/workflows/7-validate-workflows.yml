@@ -83,12 +83,38 @@ jobs:
           ]
 
           base = Path(".github/workflows")
+          steps_dir = Path(".github/steps")
+          allowed_step_values = {"0", "1", "2", "3", "4", "5", "6", "X"}
 
           def is_sha_pinned_action(ref: str) -> bool:
               if "@" not in ref:
                   return False
               version = ref.rsplit("@", 1)[1]
               return len(version) == 40 and all(ch in "0123456789abcdef" for ch in version)
+
+          step_file = steps_dir / "-step.txt"
+          if not step_file.exists():
+              raise SystemExit("Missing .github/steps/-step.txt")
+          current_step = step_file.read_text(encoding="utf-8").strip()
+          if current_step not in allowed_step_values:
+              raise SystemExit(
+                  f".github/steps/-step.txt must be one of {sorted(allowed_step_values)} but found '{current_step}'"
+              )
+
+          expected_step_docs = {
+              "0-welcome.md",
+              "1-open-a-pull-request.md",
+              "2-assign-yourself.md",
+              "3-leave-a-review.md",
+              "4-suggest-changes.md",
+              "5-apply-changes.md",
+              "6-merge-your-pull-request.md",
+              "X-finish.md",
+          }
+          present_step_docs = {p.name for p in steps_dir.glob("*.md")}
+          missing_step_docs = sorted(expected_step_docs - present_step_docs)
+          if missing_step_docs:
+              raise SystemExit(f"Missing step instruction files: {', '.join(missing_step_docs)}")
 
           for filename, from_step, to_step, read_permission, write_permission, required_snippets in expected:
               path = base / filename

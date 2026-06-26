@@ -14,6 +14,8 @@ on:
       - SECURITY_POLICY.md
       - SECURE_IMPLEMENTATION_CHECKLIST.md
       - SECURITY_READINESS_REPORT.md
+      - ZERO_TRUST_GOVERNANCE_UPDATE_TEMPLATE.md
+      - TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md
   pull_request:
     branches:
       - main

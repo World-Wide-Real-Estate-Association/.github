@@ -1,56 +1,40 @@
-## Project Documentation Template
-### Purpose
-Provides an overview of a project, including objectives, structure, and resources.
+# World Wide Real Estate Association — GitHub Automation Repository
 
-**Template Content:**
-```
-# [Project Name]
+This repository contains GitHub Actions workflows and governance documents that drive the pull-request learning flow and enforce security/compliance readiness.
 
-## Overview
-**Description:**  
-A brief description of what the project does and why it exists.  
+## Repository purpose
+- Guide contributors through a structured pull-request lifecycle course (steps 0–6 and finish).
+- Enforce workflow security standards and immutable action pinning.
+- Run governance and security controls continuously for reliability and compliance.
 
-**Objectives:**  
-- Objective 1  
-- Objective 2  
-- Objective 3  
+## Structure
+- `/home/runner/work/.github/.github/.github/workflows/`  
+  Step workflows and validation/security/governance gates.
+- `/home/runner/work/.github/.github/.github/steps/`  
+  Step instructions and current-step state (`-step.txt`).
+- `/home/runner/work/.github/.github/`  
+  Security and telemetry governance policy documents.
 
-## Tech Stack
-- **Frontend:** Framework details  
-- **Backend:** Technology details  
-- **Database:** Your choice of database  
-- **CI/CD:** Details of CI/CD pipeline  
+## Key workflows
+- `0-welcome.yml` to `6-merge-your-pull-request.yml`: step progression workflows.
+- `7-validate-workflows.yml`: YAML and workflow structure/security invariant validation.
+- `8-security-gates.yml`: secret scanning and dependency advisory review.
+- `9-governance-readiness.yml`: required governance-document section validation.
 
-## Installation and Setup
-1. Clone the repository:  
-   ```
-   git clone <repo-url>
-   ```
-2. Install dependencies:  
-   ```
-   npm install
-   ```
-3. Setup configuration (e.g., .env file):  
+## Security and governance documents
+- `/home/runner/work/.github/.github/SECURITY_POLICY.md`
+- `/home/runner/work/.github/.github/SECURE_IMPLEMENTATION_CHECKLIST.md`
+- `/home/runner/work/.github/.github/SECURITY_READINESS_REPORT.md`
+- `/home/runner/work/.github/.github/ZERO_TRUST_GOVERNANCE_UPDATE_TEMPLATE.md`
+- `/home/runner/work/.github/.github/TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md`
 
-## Folder Structure
-```
-src/
-├── components/
-├── utils/
-├── services/
-├── routes/
+## Operational expectations
+- Keep all third-party GitHub Actions pinned to immutable commit SHAs.
+- Keep default workflow permissions read-only and scope write permissions to the minimum required job.
+- Keep `persist-credentials: false` on checkout steps.
+- Require validation and security workflows to pass before merge.
 
-```
-
-## Contribution Guidelines
-- Write clear and concise commit messages.
-- Run tests before pushing changes.  
-- Follow the code style guide (e.g., ESLint and Prettier).
-
-## Contacts
-- **Owner:** [owner & email].
-```
---- 
-
-### Hiring Manager Checklist Template
-... [Include additional templates provided above for onboarding, hiring manager steps, and more]
+## Next implementation priorities
+1. Enforce required status checks in branch protection/rulesets.
+2. Add CODEOWNERS coverage for workflow and governance files.
+3. Maintain weekly/monthly/quarterly governance cadence from policy docs.
