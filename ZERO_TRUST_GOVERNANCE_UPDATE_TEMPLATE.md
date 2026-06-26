@@ -12,6 +12,8 @@
 - Dependency advisory status:
 - Branch protection/ruleset status:
 - Access review status:
+- Regional compliance mapping status:
+- Telemetry data minimization status:
 
 ## 3) Security events and detections
 - Authentication anomalies:
@@ -25,6 +27,8 @@
 - Mean execution time for security gates:
 - Top bottlenecks:
 - Optimization actions completed:
+- Runtime telemetry stability:
+- Control-bypass attempts detected/prevented:
 
 ## 5) Risk acceptance register updates
 | Risk | Owner | Justification | Compensating controls | Expiry date | Next review |

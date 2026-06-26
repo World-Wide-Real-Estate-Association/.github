@@ -12,6 +12,8 @@
 - [ ] Retention/deletion expectations are defined for each data type.
 - [ ] Threat assumptions and key abuse cases are listed.
 - [ ] CI security gates are green (workflow validation, secret scan, dependency advisory review).
+- [ ] Telemetry and KPI data sources are approved against a regional compliance baseline.
+- [ ] Collection is aggregate-first and excludes unnecessary personal/regulated data by default.
 
 ## Final draft gate
 - [ ] All high/critical security findings are remediated or formally accepted with justification.
@@ -23,9 +25,12 @@
 - [ ] Risk acceptances are documented with owner, expiry, and compensating controls.
 - [ ] Pipeline performance and failure trends are reviewed without weakening controls.
 - [ ] Final readiness report and remediation backlog are published.
+- [ ] Security control-path tests show no bypass path for required approval and validation gates.
+- [ ] Stability and maintainability checks are completed for long-lived operation.
 
 ## Operating cadence gate
 - [ ] A structured weekly update is published with status, risks, and mitigations.
 - [ ] A monthly governance review is completed for access, dependencies, and policy drift.
 - [ ] A quarterly Zero Trust posture recertification is completed and archived.
 - [ ] Owners and approvers for security decisions are explicitly documented.
+- [ ] Regional legal/control mapping is reviewed and updated when laws or market scope change.

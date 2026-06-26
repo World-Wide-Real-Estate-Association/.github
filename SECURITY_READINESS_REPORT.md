@@ -11,6 +11,7 @@ Repository workflow and CI security posture review for immediate hardening readi
 5. New CI security gates were added for secret scanning and dependency advisory review.
 6. Security gates now run on pull requests, governance-relevant pushes, and a weekly schedule for continuous assurance.
 7. Dependency advisory review remains mandatory on pull requests to protect merge decisions.
+8. A telemetry/KPI compliance framework now defines regional legal baselines, governance gates, data minimization, and phased rollout controls.
 
 ## Critical risks and status
 - **Unpinned third-party actions:** Mitigated.
@@ -28,6 +29,7 @@ Repository workflow and CI security posture review for immediate hardening readi
 2. **P1:** Add CODEOWNERS or protected-review policy for workflow file changes.
 3. **P1:** Add explicit risk acceptance register with owner/expiry tracking.
 4. **P2:** Extend dependency policy thresholds and license rules as needed.
+5. **P2:** Operationalize `TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md` with named owners and region-by-region go-live evidence.
 
 ## Operating model for organized updates
 - **Weekly:** Publish a concise security-and-reliability update (status, incidents, open risks, mitigation progress).

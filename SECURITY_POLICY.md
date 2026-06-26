@@ -43,6 +43,8 @@
 - Keep security checks reproducible across workflow triggers and branches.
 - Review pipeline duration/failure trends and optimize bottlenecks without reducing security scope.
 - Use immutable action pins and deterministic validation to minimize drift and operational ambiguity.
+- Prioritize efficient, stable, and maintainable implementations for long-lived operation.
+- Require security control-path tests to confirm no bypass path exists for critical approval or validation gates.
 
 ## 9) Minimum controls before release
 - Workflow structure validation passes.
@@ -54,3 +56,8 @@
 - Perform periodic access, dependency, and policy reviews on a fixed cadence (at least quarterly).
 - Require branch protection/rulesets to enforce mandatory security checks before merge.
 - Any risk acceptance must include owner, expiration date, business justification, compensating controls, and follow-up remediation date.
+
+## 11) Long-term software assurance
+- Design security and telemetry controls to remain maintainable under growth and operational change.
+- Treat attempts to bypass controls as security events requiring investigation and remediation.
+- Continuously verify Zero Trust assumptions for identity, authorization, and workflow transitions.
