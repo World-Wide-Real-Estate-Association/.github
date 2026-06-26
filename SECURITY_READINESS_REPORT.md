@@ -31,6 +31,21 @@ Repository workflow and CI security posture review for immediate hardening readi
 4. **P2:** Extend dependency policy thresholds and license rules as needed.
 5. **P2:** Operationalize `TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md` with named owners and region-by-region go-live evidence.
 
+## Branch protection/ruleset baseline (implementation-ready)
+- Apply protections to both `main` and `update-game`.
+- Require a pull request before merge.
+- Require at least one approving review.
+- Dismiss stale approvals when new commits are pushed.
+- Require conversation resolution before merge.
+- Require the following status checks:
+  - `Validate workflow structure / Validate workflows`
+  - `Security gates / Secret scan`
+  - `Security gates / Dependency advisory review`
+- Restrict force pushes and branch deletions.
+- Include administrators in enforcement.
+- Require linear history if squash/rebase merge policy is selected.
+- Require signed commits if organizational policy mandates signature enforcement.
+
 ## Operating model for organized updates
 - **Weekly:** Publish a concise security-and-reliability update (status, incidents, open risks, mitigation progress).
 - **Monthly:** Review repository access, token scope, dependency posture, and workflow policy drift.
