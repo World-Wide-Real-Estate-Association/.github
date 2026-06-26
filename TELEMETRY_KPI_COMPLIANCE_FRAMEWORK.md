@@ -9,7 +9,10 @@ Use this matrix before enabling telemetry collection in any geography.
 | United Kingdom | UK GDPR, PECR, transfer and cybersecurity rules, sector obligations | UK lawful basis and notice records, transfer controls, retention/deletion controls, legal approval gate |
 | United States | Federal/state privacy and security rules, consumer rights, sector obligations | State-by-state data rights support, consent where required, retention and deletion controls, legal/security approval gate |
 | Canada | PIPEDA/provincial privacy, transfer and safeguards requirements | Consent and purpose limitation records, safeguards and access controls, retention/deletion controls, legal approval gate |
-| LATAM/APAC/Other | Country-specific privacy, localization/transfer, cybersecurity and sector rules | Regional legal mapping artifact, transfer/localization controls, notice/consent rules, legal/security approval gate |
+| Brazil (LATAM) | LGPD privacy and transfer requirements, cybersecurity and sector obligations | LGPD legal basis and purpose records, transfer safeguards, retention/deletion controls, legal/security approval gate |
+| Japan (APAC) | APPI privacy and transfer requirements, cybersecurity and sector obligations | APPI purpose/use limitation records, transfer controls, retention/deletion controls, legal/security approval gate |
+| Australia (APAC) | Privacy Act/APP obligations, transfer and security requirements, sector obligations | APP-aligned notice/consent controls, transfer controls, retention/deletion controls, legal/security approval gate |
+| Other jurisdictions | Country-specific privacy, localization/transfer, cybersecurity and sector rules | Jurisdiction-specific legal mapping artifact, transfer/localization controls, notice/consent rules, legal/security approval gate |
 
 ## 2) Governance ownership and approval gates
 No KPI dashboard or runtime telemetry source may go live without all required approvals.
