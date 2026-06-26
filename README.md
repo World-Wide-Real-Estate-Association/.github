@@ -8,11 +8,11 @@ This repository contains GitHub Actions workflows and governance documents that 
 - Run governance and security controls continuously for reliability and compliance.
 
 ## Structure
-- `/home/runner/work/.github/.github/.github/workflows/`  
+- `.github/workflows/`  
   Step workflows and validation/security/governance gates.
-- `/home/runner/work/.github/.github/.github/steps/`  
+- `.github/steps/`  
   Step instructions and current-step state (`-step.txt`).
-- `/home/runner/work/.github/.github/`  
+- repository root (`./`)  
   Security and telemetry governance policy documents.
 
 ## Key workflows
@@ -22,11 +22,11 @@ This repository contains GitHub Actions workflows and governance documents that 
 - `9-governance-readiness.yml`: required governance-document section validation.
 
 ## Security and governance documents
-- `/home/runner/work/.github/.github/SECURITY_POLICY.md`
-- `/home/runner/work/.github/.github/SECURE_IMPLEMENTATION_CHECKLIST.md`
-- `/home/runner/work/.github/.github/SECURITY_READINESS_REPORT.md`
-- `/home/runner/work/.github/.github/ZERO_TRUST_GOVERNANCE_UPDATE_TEMPLATE.md`
-- `/home/runner/work/.github/.github/TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md`
+- `SECURITY_POLICY.md`
+- `SECURE_IMPLEMENTATION_CHECKLIST.md`
+- `SECURITY_READINESS_REPORT.md`
+- `ZERO_TRUST_GOVERNANCE_UPDATE_TEMPLATE.md`
+- `TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md`
 
 ## Operational expectations
 - Keep all third-party GitHub Actions pinned to immutable commit SHAs.
