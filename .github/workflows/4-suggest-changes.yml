@@ -11,16 +11,24 @@ on:
     types:
       - created
 
+permissions:
+  contents: read
+
+concurrency:
+  group: step-4-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Get the current step to only run the main job when the learner is on the same step.
   get_current_step:
     name: Check current step number
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           persist-credentials: false
       - id: get_step
@@ -32,6 +40,7 @@ jobs:
   on_review_comment:
     name: On review comment
     needs: get_current_step
+    timeout-minutes: 10
     permissions:
       contents: write
 
@@ -54,7 +63,7 @@ jobs:
     steps:
       # We'll need to check out the repository so that we can edit the README.
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           fetch-depth: 0 # Let's get all the branches.
           persist-credentials: false
@@ -62,7 +71,7 @@ jobs:
 
       # In README.md, switch step 4 for step 5.
       - name: Update to step 5
-        uses: skills/action-update-step@v2
+        uses: skills/action-update-step@9046776751ec172f2b10c6b9569c108ffa701a2d
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           from_step: 4

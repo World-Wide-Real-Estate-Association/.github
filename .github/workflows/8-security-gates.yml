@@ -1,0 +1,62 @@
+name: Security gates
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly Monday 04:00 UTC continuous-assurance run.
+    - cron: '0 4 * * 1'
+  push:
+    branches:
+      - main
+      - update-game
+    paths:
+      - .github/workflows/**
+      - SECURITY_POLICY.md
+      - SECURE_IMPLEMENTATION_CHECKLIST.md
+      - SECURITY_READINESS_REPORT.md
+      - ZERO_TRUST_GOVERNANCE_UPDATE_TEMPLATE.md
+      - TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md
+  pull_request:
+    branches:
+      - main
+      - update-game
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-gates-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secret-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@dcedce43c6f43de0b836d1fe38946645c9c638dc
+
+  dependency-review:
+    name: Dependency advisory review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Dependency review
+        uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: never

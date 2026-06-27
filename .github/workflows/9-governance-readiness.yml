@@ -1,0 +1,93 @@
+name: Governance readiness
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 4 * * 1'
+  pull_request:
+    branches:
+      - main
+      - update-game
+    paths:
+      - SECURITY_POLICY.md
+      - SECURE_IMPLEMENTATION_CHECKLIST.md
+      - SECURITY_READINESS_REPORT.md
+      - ZERO_TRUST_GOVERNANCE_UPDATE_TEMPLATE.md
+      - TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md
+      - .github/workflows/9-governance-readiness.yml
+  push:
+    branches:
+      - main
+      - update-game
+    paths:
+      - SECURITY_POLICY.md
+      - SECURE_IMPLEMENTATION_CHECKLIST.md
+      - SECURITY_READINESS_REPORT.md
+      - ZERO_TRUST_GOVERNANCE_UPDATE_TEMPLATE.md
+      - TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md
+      - .github/workflows/9-governance-readiness.yml
+
+permissions:
+  contents: read
+
+jobs:
+  governance-readiness:
+    name: Validate governance docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      - name: Validate required governance sections
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          required = {
+              "SECURITY_POLICY.md": [
+                  "## 1) Zero Trust governance principles",
+                  "## 8) Reliability and efficiency controls",
+                  "## 10) Continuous governance and risk acceptance",
+                  "## 11) Long-term software assurance",
+              ],
+              "SECURE_IMPLEMENTATION_CHECKLIST.md": [
+                  "## Rough draft gate",
+                  "## Final draft gate",
+                  "## Operating cadence gate",
+              ],
+              "SECURITY_READINESS_REPORT.md": [
+                  "## Findings",
+                  "## Critical risks and status",
+                  "## Prioritized remediation",
+                  "## Branch protection/ruleset setup checklist (GitHub UI)",
+              ],
+              "ZERO_TRUST_GOVERNANCE_UPDATE_TEMPLATE.md": [
+                  "## 2) Control health",
+                  "## 4) Reliability and efficiency",
+                  "## 7) Action tracker",
+              ],
+              "TELEMETRY_KPI_COMPLIANCE_FRAMEWORK.md": [
+                  "## 1) Compliance baseline by region",
+                  "## 2) Governance ownership and approval gates",
+                  "## 10) Phased rollout model",
+                  "## 11) Release gate criteria for telemetry expansion",
+              ],
+          }
+
+          for filename, sections in required.items():
+              path = Path(filename)
+              if not path.exists():
+                  raise SystemExit(f"Missing required governance file: {filename}")
+              content = path.read_text(encoding="utf-8")
+              for section in sections:
+                  if section not in content:
+                      raise SystemExit(f"{filename}: missing section '{section}'")
+              print(f"OK: {filename}")
+
+          print("Governance readiness validation passed.")
+          PY
