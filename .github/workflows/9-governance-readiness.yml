@@ -64,7 +64,7 @@ jobs:
                   "## Findings",
                   "## Critical risks and status",
                   "## Prioritized remediation",
-                  "## Branch protection/ruleset baseline (implementation-ready)",
+                  "## Branch protection/ruleset setup checklist (GitHub UI)",
               ],
               "ZERO_TRUST_GOVERNANCE_UPDATE_TEMPLATE.md": [
                   "## 2) Control health",
