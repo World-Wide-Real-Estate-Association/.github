@@ -100,7 +100,7 @@ jobs:
                   workflow_on = data[True]
               else:
                   workflow_on = data.get("on")
-              if workflow_on is None or isinstance(workflow_on, bool):
+              if workflow_on is None:
                   raise SystemExit(f"{path.name}: missing on trigger block")
               if not isinstance(workflow_on, (str, list, dict)):
                   raise SystemExit(f"{path.name}: invalid on trigger format")
@@ -131,15 +131,14 @@ jobs:
                       uses = str(step.get("uses", "")).strip()
                       if uses.startswith("actions/checkout@"):
                           with_args = step.get("with", {})
-                          persist_value = with_args.get("persist-credentials") if isinstance(with_args, dict) else None
+                          if not isinstance(with_args, dict):
+                              with_args = {}
+                          persist_value = with_args.get("persist-credentials")
                           persist_is_false = (
                               persist_value is False
                               or str(persist_value).strip().lower() == "false"
                           )
-                          if (
-                              (not isinstance(with_args, dict) or not persist_is_false)
-                              and not allow_checkout_push_exception
-                          ):
+                          if not persist_is_false and not allow_checkout_push_exception:
                               raise SystemExit(
                                   f"{path.name}: checkout step in job '{job_name}' must set persist-credentials: false"
                               )
