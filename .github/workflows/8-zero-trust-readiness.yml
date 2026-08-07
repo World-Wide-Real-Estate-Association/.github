@@ -86,6 +86,7 @@ jobs:
           # of controlled bootstrap progression may skip persist-credentials: false on
           # checkout. Extend this allowlist only when a workflow must push commits.
           # To add an exception, append the workflow filename to this set.
+          # 0-welcome.yml is exempt because it intentionally commits course progress state.
           workflows_with_checkout_push_exception = {"0-welcome.yml"}
 
           for path in workflow_paths:
