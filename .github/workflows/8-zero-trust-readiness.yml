@@ -54,7 +54,7 @@ jobs:
                   raise SystemExit(f"Report is missing required content: {item}")
 
           baseline_controls = [
-              "Centralize identity trust",
+              "Centralize identity trust (SSO, MFA, hardware-backed auth for privileged users)",
               "Enforce protected admin roles, break-glass controls, and approval boundaries",
               "Enforce least-privilege workflow permissions and controlled repository tokens",
               "Require signed commits/tags and protected branches with mandatory status checks",

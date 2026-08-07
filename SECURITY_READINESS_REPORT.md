@@ -61,19 +61,19 @@
 ## 30/60/90 implementation roadmap
 
 ### Next 30 days
-- Finalize identity and access baseline (owner/admin model and approval boundaries).
-- Enable complete secret scanning and security alert visibility.
-- Enforce branch protection and required status checks for protected branches.
+- Validate identity and access baseline evidence (owner/admin model and approval boundaries) across all governed repositories.
+- Verify secret scanning and security alert visibility remains complete and actionable.
+- Audit branch protection and required status checks for protected branches to confirm no policy drift.
 
 ### Next 60 days
-- Introduce workload identity for CI/CD and remove static deployment credentials.
-- Require signed commits/tags for protected release paths.
-- Add deployment environment approval gates for production.
+- Expand workload identity controls and deprecate any newly discovered static deployment credentials.
+- Verify signed commits/tags enforcement on protected release paths across all release workflows.
+- Audit deployment environment approval gates for production and reconcile exception handling.
 
 ### Next 90 days
-- Integrate continuous verification telemetry and periodic access recertification.
-- Publish reusable Zero Trust baseline template for all projects.
-- Run quarterly governance review led by the accountable owner.
+- Publish governance maturity scorecards from continuous verification telemetry and access recertification.
+- Complete standardized Zero Trust baseline rollout and verification for all deployment projects.
+- Run quarterly governance review led by the accountable owner with tracked remediation closure.
 
 ## Maturity exit criteria
 - [x] Every Zero Trust baseline control is marked complete only when policy enforcement is active.
