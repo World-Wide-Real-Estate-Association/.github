@@ -99,7 +99,7 @@ jobs:
               workflow_on = data.get(True)
               if workflow_on is None:
                   workflow_on = data.get("on")
-              if workflow_on is None:
+              if workflow_on is None or isinstance(workflow_on, bool):
                   raise SystemExit(f"{path.name}: missing on trigger block")
               if not isinstance(workflow_on, (str, list, dict)):
                   raise SystemExit(f"{path.name}: invalid on trigger format")

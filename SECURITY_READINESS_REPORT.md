@@ -6,6 +6,9 @@
 - **Objective:** Sustain full Zero Trust-aligned deployment governance with continuously verifiable controls.
 
 ## Current status summary
+- Governance controls, policy gates, and ownership accountability are defined and evidence-backed.
+- Zero Trust baseline controls are marked complete and tied to CI enforcement where feasible.
+- Ongoing maturity is maintained through recurring evidence review, policy drift checks, and quarterly governance oversight.
 
 ## 1) Governance and control flow (Strong)
 - Step-gated workflows enforce ordered progression.
