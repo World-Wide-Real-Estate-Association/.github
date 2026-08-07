@@ -27,7 +27,6 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
 
           report = Path("SECURITY_READINESS_REPORT.md")
           if not report.exists():
@@ -66,9 +65,12 @@ jobs:
               "Standardize this baseline across all deployment projects",
           ]
 
+          normalized_lines = {line.strip() for line in text.splitlines()}
           for control in baseline_controls:
-              pattern = rf"- \[x\] {re.escape(control)}\."
-              if not re.search(pattern, text):
+              if (
+                  f"- [x] {control}." not in normalized_lines
+                  and f"- [x] {control}" not in normalized_lines
+              ):
                   raise SystemExit(f"Zero Trust baseline control must be complete: {control}")
 
           print("Readiness report contract OK")
