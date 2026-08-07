@@ -89,8 +89,11 @@ jobs:
           workflows_with_checkout_push_exception = {"0-welcome.yml"}
 
           for path in workflow_paths:
-              with path.open(encoding="utf-8") as handle:
-                  data = yaml.safe_load(handle)
+              try:
+                  with path.open(encoding="utf-8") as handle:
+                      data = yaml.safe_load(handle)
+              except yaml.YAMLError as exc:
+                  raise SystemExit(f"{path.name}: invalid YAML: {exc}") from exc
 
               if not isinstance(data, dict):
                   raise SystemExit(f"{path.name}: invalid workflow structure")
@@ -102,6 +105,8 @@ jobs:
                   workflow_on = data.get("on")
               if workflow_on is None:
                   raise SystemExit(f"{path.name}: missing on trigger block")
+              if isinstance(workflow_on, bool):
+                  raise SystemExit(f"{path.name}: invalid on trigger format: boolean value is not allowed")
               if not isinstance(workflow_on, (str, list, dict)):
                   raise SystemExit(f"{path.name}: invalid on trigger format")
               if (
