@@ -46,7 +46,7 @@ jobs:
               "## Maturity exit criteria",
               "Centralize identity trust",
               "Use short-lived workload identity for CI/CD",
-              "Enforce environment-level approvals and deployment protections for production.",
+              "Enforce environment-level approvals and deployment protections for production",
           ]
 
           for item in required:
@@ -95,6 +95,7 @@ jobs:
               if not isinstance(data, dict):
                   raise SystemExit(f"{path.name}: invalid workflow structure")
 
+              # PyYAML can parse the bare key `on:` as boolean True under YAML 1.1 rules.
               workflow_on = data.get(True)
               if workflow_on is None:
                   workflow_on = data.get("on")
