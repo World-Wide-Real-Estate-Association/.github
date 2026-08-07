@@ -27,6 +27,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
 
           report = Path("SECURITY_READINESS_REPORT.md")
           if not report.exists():
@@ -39,7 +40,11 @@ jobs:
               "## 2) Security assurance completeness (Moderate)",
               "## 3) Overall maturity (Solid foundation)",
               "## Zero Trust baseline controls",
+              "## Auditable governance policy map",
+              "## CI governance validation coverage",
+              "## Evidence and review cadence",
               "## 30/60/90 implementation roadmap",
+              "## Maturity exit criteria",
               "Centralize identity trust",
               "Use short-lived workload identity for CI/CD",
               "Enforce environment-level approvals and deployment protections for production.",
@@ -48,6 +53,23 @@ jobs:
           for item in required:
               if item not in text:
                   raise SystemExit(f"Report is missing required content: {item}")
+
+          baseline_controls = [
+              "Centralize identity trust",
+              "Enforce protected admin roles, break-glass controls, and approval boundaries",
+              "Enforce least-privilege workflow permissions and controlled repository tokens",
+              "Require signed commits/tags and protected branches with mandatory status checks",
+              "Use short-lived workload identity for CI/CD and remove long-lived deploy credentials",
+              "Gate deployments with policy checks, secret scanning, dependency risk checks, and attestations",
+              "Enforce environment-level approvals and deployment protections for production",
+              "Continuously verify with runtime monitoring, anomaly detection, immutable audit trails, and periodic access recertification",
+              "Standardize this baseline across all deployment projects",
+          ]
+
+          for control in baseline_controls:
+              pattern = rf"- \[x\] {re.escape(control)}\."
+              if not re.search(pattern, text):
+                  raise SystemExit(f"Zero Trust baseline control must be complete: {control}")
 
           print("Readiness report contract OK")
           PY
