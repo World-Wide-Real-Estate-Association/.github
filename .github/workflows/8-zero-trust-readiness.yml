@@ -56,21 +56,68 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import yaml
 
           workflow_paths = sorted(Path(".github/workflows").glob("*.yml"))
           if not workflow_paths:
               raise SystemExit("No workflow files found")
+          # Only workflows that intentionally perform authenticated git pushes as part
+          # of controlled bootstrap progression may skip persist-credentials: false on
+          # checkout. Extend this allowlist only when a workflow must push commits.
+          # To add an exception, append the workflow filename to this set.
+          workflows_with_checkout_push_exception = {"0-welcome.yml"}
 
-          disallowed = ["pull_request_target:"]
           for path in workflow_paths:
-              text = path.read_text(encoding="utf-8")
-              if "persist-credentials: false" not in text:
-                  raise SystemExit(f"{path.name}: missing persist-credentials: false")
-              if "permissions:" not in text:
+              with path.open(encoding="utf-8") as handle:
+                  data = yaml.safe_load(handle)
+
+              if not isinstance(data, dict):
+                  raise SystemExit(f"{path.name}: invalid workflow structure")
+
+              workflow_on = data.get("on", data.get(True))
+              if workflow_on is None:
+                  raise SystemExit(f"{path.name}: missing on trigger block")
+              if not isinstance(workflow_on, (str, list, dict)):
+                  raise SystemExit(f"{path.name}: invalid on trigger format")
+              if (
+                  workflow_on == "pull_request_target"
+                  or (isinstance(workflow_on, list) and "pull_request_target" in workflow_on)
+                  or (isinstance(workflow_on, dict) and "pull_request_target" in workflow_on)
+              ):
+                  raise SystemExit(f"{path.name}: disallowed trigger detected: pull_request_target")
+
+              jobs = data.get("jobs", {})
+              if not isinstance(jobs, dict):
+                  raise SystemExit(f"{path.name}: jobs must be a mapping")
+              has_permissions = "permissions" in data or any(
+                  isinstance(job, dict) and "permissions" in job for job in jobs.values()
+              )
+              if not has_permissions:
                   raise SystemExit(f"{path.name}: missing permissions block")
-              for rule in disallowed:
-                  if rule in text:
-                      raise SystemExit(f"{path.name}: disallowed trigger detected: {rule}")
+
+              allow_checkout_push_exception = path.name in workflows_with_checkout_push_exception
+
+              for job_name, job in jobs.items():
+                  if not isinstance(job, dict):
+                      continue
+                  for step in job.get("steps", []) or []:
+                      if not isinstance(step, dict):
+                          continue
+                      uses = str(step.get("uses", "")).strip()
+                      if uses.startswith("actions/checkout@"):
+                          with_args = step.get("with", {})
+                          persist_value = with_args.get("persist-credentials") if isinstance(with_args, dict) else None
+                          persist_is_false = (
+                              persist_value is False
+                              or str(persist_value).strip().lower() == "false"
+                          )
+                          if (
+                              (not isinstance(with_args, dict) or not persist_is_false)
+                              and not allow_checkout_push_exception
+                          ):
+                              raise SystemExit(
+                                  f"{path.name}: checkout step in job '{job_name}' must set persist-credentials: false"
+                              )
 
           print("Workflow security guardrails OK")
           PY
