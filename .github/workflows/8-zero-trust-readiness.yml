@@ -1,0 +1,76 @@
+name: Zero Trust readiness
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 10 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  zero-trust-readiness:
+    name: Validate zero trust baseline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Validate readiness report contract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          report = Path("SECURITY_READINESS_REPORT.md")
+          if not report.exists():
+              raise SystemExit("Missing SECURITY_READINESS_REPORT.md")
+
+          text = report.read_text(encoding="utf-8")
+          required = [
+              "Owner:** Luis Alonso Mejia",
+              "## 1) Governance and control flow (Strong)",
+              "## 2) Security assurance completeness (Moderate)",
+              "## 3) Overall maturity (Solid foundation)",
+              "## Zero Trust baseline controls",
+              "## 30/60/90 implementation roadmap",
+              "Centralize identity trust",
+              "Use short-lived workload identity for CI/CD",
+              "Enforce environment-level approvals and deployment protections for production.",
+          ]
+
+          for item in required:
+              if item not in text:
+                  raise SystemExit(f"Report is missing required content: {item}")
+
+          print("Readiness report contract OK")
+          PY
+
+      - name: Validate workflow security guardrails
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          workflow_paths = sorted(Path(".github/workflows").glob("*.yml"))
+          if not workflow_paths:
+              raise SystemExit("No workflow files found")
+
+          disallowed = ["pull_request_target:"]
+          for path in workflow_paths:
+              text = path.read_text(encoding="utf-8")
+              if "persist-credentials: false" not in text:
+                  raise SystemExit(f"{path.name}: missing persist-credentials: false")
+              if "permissions:" not in text:
+                  raise SystemExit(f"{path.name}: missing permissions block")
+              for rule in disallowed:
+                  if rule in text:
+                      raise SystemExit(f"{path.name}: disallowed trigger detected: {rule}")
+
+          print("Workflow security guardrails OK")
+          PY
