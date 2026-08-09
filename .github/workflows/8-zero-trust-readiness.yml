@@ -1,0 +1,153 @@
+name: Zero Trust readiness
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 10 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  zero-trust-readiness:
+    name: Validate zero trust baseline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Validate readiness report contract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          report = Path("SECURITY_READINESS_REPORT.md")
+          if not report.exists():
+              raise SystemExit("Missing SECURITY_READINESS_REPORT.md")
+
+          text = report.read_text(encoding="utf-8")
+          required = [
+              "Owner:** Luis Alonso Mejia",
+              "## 1) Governance and control flow (Strong)",
+              "## 2) Security assurance completeness (Moderate)",
+              "## 3) Overall maturity (Solid foundation)",
+              "## Zero Trust baseline controls",
+              "## Auditable governance policy map",
+              "## CI governance validation coverage",
+              "## Evidence and review cadence",
+              "## 30/60/90 implementation roadmap",
+              "## Maturity exit criteria",
+              "Centralize identity trust",
+              "Use short-lived workload identity for CI/CD",
+              "Enforce environment-level approvals and deployment protections for production",
+          ]
+
+          for item in required:
+              if item not in text:
+                  raise SystemExit(f"Report is missing required content: {item}")
+
+          baseline_controls = [
+              "Centralize identity trust (SSO, MFA, hardware-backed auth for privileged users)",
+              "Enforce protected admin roles, break-glass controls, and approval boundaries",
+              "Enforce least-privilege workflow permissions and controlled repository tokens",
+              "Require signed commits/tags and protected branches with mandatory status checks",
+              "Use short-lived workload identity for CI/CD and remove long-lived deploy credentials",
+              "Gate deployments with policy checks, secret scanning, dependency risk checks, and attestations",
+              "Enforce environment-level approvals and deployment protections for production",
+              "Continuously verify with runtime monitoring, anomaly detection, immutable audit trails, and periodic access recertification",
+              "Standardize this baseline across all deployment projects",
+          ]
+
+          normalized_lines = [line.strip() for line in text.splitlines()]
+          for control in baseline_controls:
+              if not any(line.startswith(f"- [x] {control}") for line in normalized_lines):
+                  raise SystemExit(f"Zero Trust baseline control must be complete: {control}")
+
+          print("Readiness report contract OK")
+          PY
+
+      - name: Validate workflow security guardrails
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          workflow_paths = sorted(Path(".github/workflows").glob("*.yml"))
+          if not workflow_paths:
+              raise SystemExit("No workflow files found")
+          # Only workflows that intentionally perform authenticated git pushes as part
+          # of controlled bootstrap progression may skip persist-credentials: false on
+          # checkout. Extend this allowlist only when a workflow must push commits.
+          # To add an exception, append the workflow filename to this set.
+          # 0-welcome.yml is exempt because it intentionally commits course progress state.
+          workflows_with_checkout_push_exception = {"0-welcome.yml"}
+
+          for path in workflow_paths:
+              try:
+                  with path.open(encoding="utf-8") as handle:
+                      data = yaml.safe_load(handle)
+              except yaml.YAMLError as exc:
+                  raise SystemExit(f"{path.name}: invalid YAML: {exc}") from exc
+
+              if not isinstance(data, dict):
+                  raise SystemExit(f"{path.name}: invalid workflow structure")
+
+              # PyYAML can parse bare `on:` as boolean True; quoted `"on"` remains a string key.
+              if True in data:
+                  workflow_on = data[True]
+              else:
+                  workflow_on = data.get("on")
+              if workflow_on is None:
+                  raise SystemExit(f"{path.name}: missing on trigger block")
+              if isinstance(workflow_on, bool):
+                  raise SystemExit(f"{path.name}: invalid on trigger format: boolean value is not allowed")
+              if not isinstance(workflow_on, (str, list, dict)):
+                  raise SystemExit(f"{path.name}: invalid on trigger format")
+              if (
+                  workflow_on == "pull_request_target"
+                  or (isinstance(workflow_on, list) and "pull_request_target" in workflow_on)
+                  or (isinstance(workflow_on, dict) and "pull_request_target" in workflow_on)
+              ):
+                  raise SystemExit(f"{path.name}: disallowed trigger detected: pull_request_target")
+
+              jobs = data.get("jobs", {})
+              if not isinstance(jobs, dict):
+                  raise SystemExit(f"{path.name}: jobs must be a mapping")
+              has_permissions = "permissions" in data or any(
+                  isinstance(job, dict) and "permissions" in job for job in jobs.values()
+              )
+              if not has_permissions:
+                  raise SystemExit(f"{path.name}: missing permissions block")
+
+              allow_checkout_push_exception = path.name in workflows_with_checkout_push_exception
+
+              for job_name, job in jobs.items():
+                  if not isinstance(job, dict):
+                      continue
+                  for step in job.get("steps", []) or []:
+                      if not isinstance(step, dict):
+                          continue
+                      uses = str(step.get("uses", "")).strip()
+                      if uses.startswith("actions/checkout@"):
+                          with_args = step.get("with", {})
+                          if not isinstance(with_args, dict):
+                              with_args = {}
+                          persist_value = with_args.get("persist-credentials")
+                          persist_is_false = (
+                              persist_value is False
+                              or str(persist_value).strip().lower() == "false"
+                          )
+                          if not persist_is_false and not allow_checkout_push_exception:
+                              raise SystemExit(
+                                  f"{path.name}: checkout step in job '{job_name}' must set persist-credentials: false"
+                              )
+
+          print("Workflow security guardrails OK")
+          PY
