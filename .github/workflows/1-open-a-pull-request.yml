@@ -21,7 +21,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
       - id: get_step
@@ -56,7 +56,7 @@ jobs:
     steps:
       # We'll need to check out the repository so that we can edit the README.
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0 # Let's get all the branches.
           persist-credentials: false
